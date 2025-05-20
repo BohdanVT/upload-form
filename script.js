@@ -9,19 +9,20 @@ function goToStep2() {
   toggleStep('step1', 'step2');
 }
 
-// Плавне переключення кроків
 function toggleStep(hideId, showId) {
   const hideEl = document.getElementById(hideId);
   const showEl = document.getElementById(showId);
+
   hideEl.classList.remove('active');
   setTimeout(() => {
     hideEl.style.display = 'none';
-    showEl.style.display = 'flex';
-    setTimeout(() => showEl.classList.add('active'), 20);
+    if (showEl) {
+      showEl.style.display = 'flex';
+      setTimeout(() => showEl.classList.add('active'), 20);
+    }
   }, 400);
 }
 
-// Обробка вибору файлів
 const fileInput = document.getElementById('fileInput');
 const fileCount = document.getElementById('fileCount');
 const chooseFilesBtn = document.getElementById('chooseFilesBtn');
@@ -35,7 +36,6 @@ fileInput.addEventListener('change', () => {
   else fileCount.value = `${n} файлів обрано`;
 });
 
-// Завантаження файлів
 async function upload() {
   const fullName = document.getElementById('fullName').value.trim();
   const files = fileInput.files;
@@ -47,7 +47,7 @@ async function upload() {
     return;
   }
 
-  toggleStep('step2', ''); // сховаємо step2
+  toggleStep('step2', '');
   loader.style.display = 'block';
 
   const uploaded = [];
@@ -62,25 +62,26 @@ async function upload() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, files: uploaded })
     });
+
     const text = await res.text();
     loader.style.display = 'none';
 
     if (text === 'OK') {
-      status.innerHTML = `<div class="success">✅ Done!</div>`;
+      status.innerHTML = `<div class="success">✅ Завантажено успішно!</div>`;
     } else {
-      status.innerHTML = `<div class="error">❌ Fail: ${text}</div>`;
+      status.innerHTML = `<div class="error">❌ Помилка: ${text}</div>`;
     }
   } catch (e) {
     loader.style.display = 'none';
-    status.innerHTML = `<div class="error">⚠️ Error: ${e.message}</div>`;
+    status.innerHTML = `<div class="error">⚠️ Помилка: ${e.message}</div>`;
   }
 }
 
 function readFileAsBase64(file) {
-  return new Promise((res, rej) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = e => res(e.target.result);
-    reader.onerror = e => rej(e);
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = e => reject(e);
     reader.readAsDataURL(file);
   });
 }
