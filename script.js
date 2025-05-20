@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyuT61yfyJEfN04Pz6_v2f0_yArhhVo-X9KUgm7t01J2qqffUQsYmJzgU08AjGstfxV/exec'; 
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzU1lvOICV7-gMOR3T2hTCkyVCoe4XYLi7VW6RSd4fhg2g0x4QiIuQladEdE04i88SP/exec'; 
 
 function goToStep2() {
   const fullName = document.getElementById('fullName').value.trim();
@@ -24,7 +24,6 @@ async function upload() {
   document.getElementById('loader').style.display = 'block';
 
   let uploaded = [];
-  let readCount = 0;
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -39,7 +38,8 @@ async function upload() {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName: fullName, files: uploaded })
+      body: JSON.stringify({ fullName: fullName, files: uploaded }),
+      mode: 'cors'  
     });
 
     const text = await response.text();
