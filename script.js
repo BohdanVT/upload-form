@@ -6,28 +6,39 @@ function goToStep2() {
     alert('Будь ласка, введіть ПІБ');
     return;
   }
-  document.getElementById('step1').style.display = 'none';
-  document.getElementById('step2').style.display = 'flex';
+
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+
+  step1.style.opacity = 0;
+  setTimeout(() => {
+    step1.style.display = 'none';
+    step2.style.display = 'flex';
+    step2.style.opacity = 0;
+    setTimeout(() => step2.style.opacity = 1, 50);
+  }, 300);
 }
 
 async function upload() {
   const fullName = document.getElementById('fullName').value.trim();
   const files = document.getElementById('fileInput').files;
   const status = document.getElementById('status');
+  const loader = document.getElementById('loader');
 
   if (!files.length) {
     alert('Будь ласка, виберіть хоча б один файл');
     return;
   }
 
-  document.getElementById('step2').style.display = 'none';
-  document.getElementById('loader').style.display = 'block';
+  document.getElementById('step2').style.opacity = 0;
+  setTimeout(() => {
+    document.getElementById('step2').style.display = 'none';
+    loader.style.display = 'block';
+  }, 300);
 
-  let uploaded = [];
-  let readCount = 0;
+  const uploaded = [];
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+  for (let file of files) {
     const base64Data = await readFileAsBase64(file);
     uploaded.push({
       name: file.name,
@@ -39,20 +50,19 @@ async function upload() {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName: fullName, files: uploaded })
+      body: JSON.stringify({ fullName, files: uploaded })
     });
 
     const text = await response.text();
-
-    document.getElementById('loader').style.display = 'none';
+    loader.style.display = 'none';
 
     if (text === 'OK') {
-      status.innerHTML = '<div style="color: #28a745; font-size: 25px; font-weight: bold; animation: fadeIn 1s ease-in-out;">✅ Done!</div>';
+      status.innerHTML = `<div style="color: #28a745; font-size: 24px; font-weight: bold; animation: fadeIn 0.5s ease;">✅ Успішно надіслано!</div>`;
     } else {
       status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">❌ Помилка при завантаженні: ${text}</div>`;
     }
   } catch (error) {
-    document.getElementById('loader').style.display = 'none';
+    loader.style.display = 'none';
     status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Помилка: ${error.message}</div>`;
   }
 }
