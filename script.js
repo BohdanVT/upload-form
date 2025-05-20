@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://odd-waterfall-2669.bvo-44f.workers.dev'; 
+const SCRIPT_URL = 'https://odd-waterfall-2669.bvo-44f.workers.dev';
 
 function goToStep2() {
   const fullName = document.getElementById('fullName').value.trim();
@@ -6,22 +6,39 @@ function goToStep2() {
     alert('Будь ласка, введіть ПІБ');
     return;
   }
-
-  const step1 = document.getElementById('step1');
-  const step2 = document.getElementById('step2');
-
-  step1.style.opacity = 0;
-  setTimeout(() => {
-    step1.style.display = 'none';
-    step2.style.display = 'flex';
-    step2.style.opacity = 0;
-    setTimeout(() => step2.style.opacity = 1, 50);
-  }, 300);
+  toggleStep('step1', 'step2');
 }
 
+// Плавне переключення кроків
+function toggleStep(hideId, showId) {
+  const hideEl = document.getElementById(hideId);
+  const showEl = document.getElementById(showId);
+  hideEl.classList.remove('active');
+  setTimeout(() => {
+    hideEl.style.display = 'none';
+    showEl.style.display = 'flex';
+    setTimeout(() => showEl.classList.add('active'), 20);
+  }, 400);
+}
+
+// Обробка вибору файлів
+const fileInput = document.getElementById('fileInput');
+const fileCount = document.getElementById('fileCount');
+const chooseFilesBtn = document.getElementById('chooseFilesBtn');
+
+chooseFilesBtn.addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', () => {
+  const n = fileInput.files.length;
+  if (n === 0) fileCount.value = 'Файли не обрано';
+  else if (n === 1) fileCount.value = fileInput.files[0].name;
+  else fileCount.value = `${n} файлів обрано`;
+});
+
+// Завантаження файлів
 async function upload() {
   const fullName = document.getElementById('fullName').value.trim();
-  const files = document.getElementById('fileInput').files;
+  const files = fileInput.files;
   const status = document.getElementById('status');
   const loader = document.getElementById('loader');
 
@@ -30,48 +47,40 @@ async function upload() {
     return;
   }
 
-  document.getElementById('step2').style.opacity = 0;
-  setTimeout(() => {
-    document.getElementById('step2').style.display = 'none';
-    loader.style.display = 'block';
-  }, 300);
+  toggleStep('step2', ''); // сховаємо step2
+  loader.style.display = 'block';
 
   const uploaded = [];
-
   for (let file of files) {
     const base64Data = await readFileAsBase64(file);
-    uploaded.push({
-      name: file.name,
-      data: base64Data.split(',')[1]
-    });
+    uploaded.push({ name: file.name, data: base64Data.split(',')[1] });
   }
 
   try {
-    const response = await fetch(SCRIPT_URL, {
+    const res = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, files: uploaded })
     });
-
-    const text = await response.text();
+    const text = await res.text();
     loader.style.display = 'none';
 
     if (text === 'OK') {
-      status.innerHTML = `<div style="color: #28a745; font-size: 24px; font-weight: bold; animation: fadeIn 0.5s ease;">✅ Done!</div>`;
+      status.innerHTML = `<div class="success">✅ Done!</div>`;
     } else {
-      status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">❌ Fail: ${text}</div>`;
+      status.innerHTML = `<div class="error">❌ Fail: ${text}</div>`;
     }
-  } catch (error) {
+  } catch (e) {
     loader.style.display = 'none';
-    status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Error: ${error.message}</div>`;
+    status.innerHTML = `<div class="error">⚠️ Error: ${e.message}</div>`;
   }
 }
 
 function readFileAsBase64(file) {
-  return new Promise((resolve, reject) => {
+  return new Promise((res, rej) => {
     const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = e => reject(e);
+    reader.onload = e => res(e.target.result);
+    reader.onerror = e => rej(e);
     reader.readAsDataURL(file);
   });
 }
