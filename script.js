@@ -57,13 +57,13 @@ async function upload() {
     loader.style.display = 'none';
 
     if (text === 'OK') {
-      status.innerHTML = `<div style="color: #28a745; font-size: 24px; font-weight: bold; animation: fadeIn 0.5s ease;">✅ Успішно надіслано!</div>`;
+      status.innerHTML = `<div style="color: #28a745; font-size: 24px; font-weight: bold; animation: fadeIn 0.5s ease;">✅ Done!</div>`;
     } else {
-      status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">❌ Помилка при завантаженні: ${text}</div>`;
+      status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">❌ Fail: ${text}</div>`;
     }
   } catch (error) {
     loader.style.display = 'none';
-    status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Помилка: ${error.message}</div>`;
+    status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Error: ${error.message}</div>`;
   }
 }
 
