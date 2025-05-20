@@ -164,16 +164,17 @@ input::placeholder {
 
 .status {
   margin-top: 16px;
-  font-size: 16px;
+  font-size: 25px;
   font-weight: 600;
+  color: #038d3e;
   text-align: center;
 }
 
 .footer {
   margin-top: 30px;
   text-align: center;
-  font-size: 25px;
-  color: #066006;
+  font-size: 14px;
+  color: #666;
   opacity: 0.8;
 }
 
