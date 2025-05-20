@@ -19,7 +19,11 @@
     </div>
 
     <div id="step2" class="step" style="display: none;">
-      <input type="file" id="fileInput" multiple />
+      <div class="file-upload-row">
+        <input type="file" id="fileInput" multiple onchange="displaySelectedFiles()" />
+        <input type="text" id="fileNames" placeholder="Файли не обрано" readonly />
+        <button type="button" class="file-btn" onclick="document.getElementById('fileInput').click()">📎 Обрати</button>
+      </div>
       <button class="submit-btn" onclick="upload()">Upload Files</button>
     </div>
 
@@ -31,4 +35,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
