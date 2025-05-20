@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Techto Electronics - Upload Form</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://i.postimg.cc/cCf7fTfX/df-removebg-preview-1.png" alt="Logo" />
+      <div class="title">Techto Electronics</div>
+    </div>
+
+    <div id="step1" class="step">
+      <input type="text" id="fullName" placeholder="Прізвище Ім’я По батькові" />
+      <button class="submit-btn" onclick="goToStep2()">Confirm</button>
+    </div>
+
+    <div id="step2" class="step" style="display: none;">
+      <input type="file" id="fileInput" multiple />
+      <button class="submit-btn" onclick="upload()">Upload Files</button>
+    </div>
+
+    <div id="loader" class="loader"></div>
+    <div id="status"></div>
+    <div class="footer">With care, Techto HR Team</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
