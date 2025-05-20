@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Techto Electronics - Upload Form</title>
+  <title>Techto Electronics – Upload Form</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -13,22 +13,29 @@
       <div class="title">Techto Electronics</div>
     </div>
 
-    <div id="step1" class="step">
+    <!-- STEP 1 -->
+    <div id="step1" class="step active">
       <input type="text" id="fullName" placeholder="Прізвище Ім’я По батькові" />
-      <button class="submit-btn" onclick="goToStep2()">Confirm</button>
+      <button class="btn primary" onclick="goToStep2()">Confirm</button>
     </div>
 
-    <div id="step2" class="step" style="display: none;">
-      <input type="file" id="fileInput" multiple />
-      <button class="submit-btn" onclick="upload()">Upload Files</button>
+    <!-- STEP 2 -->
+    <div id="step2" class="step">
+      <div class="file-upload">
+        <input type="file" id="fileInput" multiple />
+        <div class="file-input-wrapper">
+          <input type="text" id="fileCount" readonly placeholder="Файли не обрано" />
+          <button type="button" id="chooseFilesBtn" class="btn secondary">📎 Обрати</button>
+        </div>
+      </div>
+      <button class="btn primary" onclick="upload()">Upload Files</button>
     </div>
 
     <div id="loader" class="loader"></div>
-    <div id="status"></div>
+    <div id="status" class="status"></div>
     <div class="footer">With care, Techto HR Team</div>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
