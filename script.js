@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyuT61yfyJEfN04Pz6_v2f0_yArhhVo-X9KUgm7t01J2qqffUQsYmJzgU08AjGstfxV/exec'; 
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKzgr8VJQotRLSBnzsSdGXhJs_Iyv0VLra3V6A812Dafjc41EB1Ef5l-Ke2cTDe4U6/exec'; 
 
 function goToStep2() {
   const fullName = document.getElementById('fullName').value.trim();
