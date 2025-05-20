@@ -1,33 +1,58 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyuT61yfyJEfN04Pz6_v2f0_yArhhVo-X9KUgm7t01J2qqffUQsYmJzgU08AjGstfxV/exec'; 
+const SCRIPT_URL = 'https://odd-waterfall-2669.bvo-44f.workers.dev';
 
 function goToStep2() {
   const fullName = document.getElementById('fullName').value.trim();
   if (!fullName) {
-    alert('Будь ласка, введіть ПІБ');
+    alert('Please enter your full name.');
     return;
   }
-  document.getElementById('step1').style.display = 'none';
-  document.getElementById('step2').style.display = 'flex';
+
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+
+  step1.style.opacity = 0;
+  setTimeout(() => {
+    step1.style.display = 'none';
+    step2.style.display = 'flex';
+    step2.style.opacity = 0;
+    setTimeout(() => step2.style.opacity = 1, 50);
+  }, 300);
 }
+
+document.getElementById('fileInput').addEventListener('change', () => {
+  const fileInput = document.getElementById('fileInput');
+  const fileCount = document.getElementById('fileCount');
+  const files = fileInput.files;
+
+  if (files.length === 0) {
+    fileCount.value = 'No files selected';
+  } else if (files.length === 1) {
+    fileCount.value = files[0].name;
+  } else {
+    fileCount.value = `${files.length} files selected`;
+  }
+});
 
 async function upload() {
   const fullName = document.getElementById('fullName').value.trim();
   const files = document.getElementById('fileInput').files;
   const status = document.getElementById('status');
+  const loader = document.getElementById('loader');
 
   if (!files.length) {
-    alert('Будь ласка, виберіть хоча б один файл');
+    alert('Please choose at least one file.');
     return;
   }
 
-  document.getElementById('step2').style.display = 'none';
-  document.getElementById('loader').style.display = 'block';
+  document.getElementById('step2').style.opacity = 0;
+  setTimeout(() => {
+    document.getElementById('step2').style.display = 'none';
+    loader.style.display = 'block';
+  }, 300);
 
-  let uploaded = [];
-  let readCount = 0;
+  const uploaded = [];
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+  for (let file of files) {
     const base64Data = await readFileAsBase64(file);
     uploaded.push({
       name: file.name,
@@ -39,21 +64,20 @@ async function upload() {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName: fullName, files: uploaded })
+      body: JSON.stringify({ fullName, files: uploaded })
     });
 
     const text = await response.text();
-
-    document.getElementById('loader').style.display = 'none';
+    loader.style.display = 'none';
 
     if (text === 'OK') {
-      status.innerHTML = '<div style="color: #28a745; font-size: 25px; font-weight: bold; animation: fadeIn 1s ease-in-out;">✅ Done!</div>';
+      status.innerHTML = `<div style="color: #28a745; font-size: 24px; font-weight: bold; animation: fadeIn 0.5s ease;">✅ Done!</div>`;
     } else {
-      status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">❌ Помилка при завантаженні: ${text}</div>`;
+      status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">❌ Fail: ${text}</div>`;
     }
   } catch (error) {
-    document.getElementById('loader').style.display = 'none';
-    status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Помилка: ${error.message}</div>`;
+    loader.style.display = 'none';
+    status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Error: ${error.message}</div>`;
   }
 }
 
