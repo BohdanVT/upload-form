@@ -63,7 +63,7 @@ async function upload() {
     }
   } catch (error) {
     loader.style.display = 'none';
-    status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Помилка: ${error.message}</div>`;
+    status.innerHTML = `<div style="color: red; font-size: 18px; font-weight: bold;">⚠️ Error: ${error.message}</div>`;
   }
 }
 
